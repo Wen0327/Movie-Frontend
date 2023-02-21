@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ImSpinner3 } from "react-icons/im";
 // get reset id & token
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { verifyPasswordResetToken } from "../../api/auth";
+import { resetPassword, verifyPasswordResetToken } from "../../api/auth";
 import { useNotification } from "../../hook";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
@@ -13,7 +13,11 @@ import Title from "../form/Title";
 
 export default function ConfirmPassword() {
   // const resetPasswordUrl = `http://localhost:3000/auth/reset-password?token=${token}&id=${user._id}`;
-  const [isVerifying, setIsVerifying] = useState(true);
+  const [password, setPassword] = useState({
+    one: "",
+    confirmNewPassword: "",
+  });
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
@@ -24,21 +28,57 @@ export default function ConfirmPassword() {
 
   // isValid isVerifying !isValid
 
-  useEffect(()=>{
-    isValidToken()
-  },[])
+  useEffect(() => {
+    isValidToken();
+  }, []);
 
   const isValidToken = async () => {
     const { error, valid } = await verifyPasswordResetToken(token, id);
-    if (error) return updateNotification("error", error);
+    setIsVerifying(false);
+    if (error) {
+      // remove token & id
+      navigate("/auth/password-reset", { replace: true });
+      return updateNotification("error", error);
+    }
 
     if (!valid) {
       setIsValid(false);
-      setIsVerifying(false)
-      return navigate("/auth/reset-password", { replace: true });
+      return navigate("/auth/password-reset", { replace: true });
     }
     setIsValid(true);
-    setIsVerifying(true)
+  };
+
+  const handleChange = ({ target }) => {
+    const { name, value } = target;
+    setPassword({ ...password, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(password);
+    // checkout whether the password are same
+
+    if (!password.one.trim())
+      return updateNotification("error", "Password is missing!");
+
+    if (password.one !== password.confirmNewPassword)
+      return updateNotification("error", "Password do not match!");
+
+    if (password.one.trim().length < 8)
+      return updateNotification(
+        "error",
+        "Password must be longer than 8 characters."
+      );
+
+    const { error, message } = await resetPassword({
+      newPassword: password.one,
+      userId: id,
+      token,
+    });
+    if (error) return updateNotification("error", error);
+
+    updateNotification("success", message);
+    navigate("/auth/signIn", { replace: true });
   };
 
   if (isVerifying)
@@ -69,12 +109,20 @@ export default function ConfirmPassword() {
   return (
     <FormContainer>
       <Container>
-        <form className={commonModalClasses + " w-96"}>
+        <form onSubmit={handleSubmit} className={commonModalClasses + " w-96"}>
           <Title>Enter New Password</Title>
-          <FormInput label="New Password" name="password" type="password" />
           <FormInput
+            value={password.one}
+            onChange={handleChange}
+            label="New Password"
+            name="one"
+            type="password"
+          />
+          <FormInput
+            value={password.confirmNewPassword}
+            onChange={handleChange}
             label="Confirm Password"
-            name="confirmPassword"
+            name="confirmNewPassword"
             type="password"
           />
           <Submit value="Confirm Password" />
