@@ -83,6 +83,7 @@ export const verifyPasswordResetToken = async (token,userId) => {
 export const resetPassword = async (passwordInfo) => {
     try{
         const {data} = await client.post('/user/password-reset',passwordInfo)
+        console.log(passwordInfo)
         return data
     }catch(error){
         const { response } = error
