@@ -1,5 +1,6 @@
 import React from "react";
-import { BsFillSunFill } from "react-icons/bs";
+import { BsFillSunFill,BsFillMoonFill } from "react-icons/bs";
+
 import { Link } from "react-router-dom";
 import { useAuth, useTheme } from "../../hook";
 import Container from "../Container";
@@ -56,3 +57,4 @@ export default function Navbar() {
     </div>
   );
 }
+
