@@ -49,7 +49,7 @@ export default function MovieUpload() {
 
   return (
     <div className="fixed inset-0 bg-opacity-50 dark:bg-opacity-50 bg-primary dark:bg-white backdrop-blur-sm flex items-center justify-center">
-      <div className="dark:bg-primary bg-white rounded w-[45rem] h-[40rem] overflow-auto p-2">
+      <div className="dark:bg-primary bg-white rounded w-[45rem] h-[40rem] overflow-auto p-2 custom-scroll-bar">
         {/* <UploadProgress
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
