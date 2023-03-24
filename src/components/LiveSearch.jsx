@@ -1,8 +1,6 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { commonInputClasses } from "../utils/theme";
 
-
-
 export default function LiveSearch({
   defaultValue = "",
   placeholder = "",
@@ -28,11 +26,16 @@ export default function LiveSearch({
   };
 
   const handleOnBlur = () => {
-    closeSearch();
+    setTimeout(() => {
+      closeSearch();
+    }, 100);
   };
 
   const handleSelection = (selectedItem) => {
-    onSelect(selectedItem);
+    if (selectedItem) {
+      onSelect(selectedItem);
+    }
+    closeSearch();
   };
 
   const handleKeyDown = ({ key }) => {
@@ -49,6 +52,9 @@ export default function LiveSearch({
     if (key === "ArrowUp") {
       nextCount = (focusIndex + results.length - 1) % results.length;
     }
+
+    if (key === "Escape") return closeSearch()
+
 
     if (key === "Enter") return handleSelection(results[focusIndex]);
 

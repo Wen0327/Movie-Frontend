@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNotification } from "../../hook";
 import { commonInputClasses } from "../../utils/theme";
+import CastForm from "../form/CastForm";
 import Submit from "../form/Submit";
 import LiveSearch from "../LiveSearch";
-import ModalContainer from "../modal/ModalContainer";
+import CastModal from "../modal/CastModal";
 import WritersModal from "../modal/WritersModal";
 import TagsInput from "../TagsInput";
 
@@ -46,6 +47,19 @@ export const results = [
   },
 ];
 
+export const renderItem = (result) => {
+  return (
+    <div className="flex space-x-2 rounded overflow-hidden">
+      <img
+        className="w-16 h-16 object-cover"
+        src={result.avatar}
+        alt={result.name}
+      />
+      <p className="dark:text-white font-semibold">{result.name}</p>
+    </div>
+  );
+};
+
 const defaultMovieInfo = {
   title: "",
   storyLine: "",
@@ -64,25 +78,13 @@ const defaultMovieInfo = {
 export default function MovieForm() {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWriterModal, setShowWriterModal] = useState(false);
+  const [showCastModal, setShowCastModal] = useState(false);
 
   const { updateNotification } = useNotification();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(movieInfo);
-  };
-
-  const renderItem = (result) => {
-    return (
-      <div key={result.id} className="flex space-x-2 rounded overflow-hidden">
-        <img
-          className="w-16 h-16 object-cover"
-          src={result.avatar}
-          alt={result.name}
-        />
-        <p className="dark:text-white font-semibold">{result.name}</p>
-      </div>
-    );
   };
 
   const handleChange = ({ target }) => {
@@ -98,6 +100,11 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, director: profile });
   };
 
+  const updateCast = (castInfo) => {
+    const { cast } = movieInfo;
+    setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
+  };
+
   const updateWriters = (profile) => {
     const { writers } = movieInfo;
     for (let writer of writers) {
@@ -111,25 +118,43 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
   };
 
-  const hideWritersModal = ()=>{
-    setShowWriterModal(false)
-  }
+  const hideWritersModal = () => {
+    setShowWriterModal(false);
+  };
 
-  const displayWritersModal = ()=>{
-    setShowWriterModal(true)
-  }
+  const displayWritersModal = () => {
+    setShowWriterModal(true);
+  };
+
+  const hideCastModal = () => {
+    setShowCastModal(false);
+  };
+
+  const displayCastModal = () => {
+    setShowCastModal(true);
+  };
 
   const handleWriterRemove = (profileId) => {
     const { writers } = movieInfo;
     const newWriters = writers.filter(({ id }) => id !== profileId);
-    if(!newWriters.length) hideWritersModal()
+    if (!newWriters.length) hideWritersModal();
     setMovieInfo({ ...movieInfo, writers: [...newWriters] });
   };
 
-  const { title, storyLine, director, writers } = movieInfo;
+  const handleCastRemove = (profileId) => {
+    const { cast } = movieInfo;
+    const newCast = cast.filter(({ profile }) => profile.id !== profileId);
+    if (!newCast.length) hideCastModal();
+    setMovieInfo({ ...movieInfo, cast: [...newCast] });
+  };
+
+
+  
+
+  const { title, storyLine, director, writers, cast } = movieInfo;
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex space-x-3">
+      <div autoComplete="off"  className="flex space-x-3">
         <div className="w-[70%] h-5 space-y-5">
           <div>
             <Label htmlFor="title">Title</Label>
@@ -180,12 +205,12 @@ export default function MovieForm() {
               <LabelWithBadge badge={writers.length} htmlFor="writers">
                 Writers
               </LabelWithBadge>
-              <button
+              <ViewAllBtn
                 onClick={displayWritersModal}
-                className="dark:text-white text-primary hover:underline transition"
+                visible={writers.length}
               >
                 View All
-              </button>
+              </ViewAllBtn>
             </div>
             <LiveSearch
               name="writers"
@@ -195,16 +220,33 @@ export default function MovieForm() {
               onSelect={updateWriters}
             />
           </div>
-
-          <Submit value="Upload" />
+          <div>
+            <div className="flex justify-between">
+              <LabelWithBadge badge={cast.length}>
+                Add Cast & Crew
+              </LabelWithBadge>
+              <ViewAllBtn onClick={displayCastModal} visible={cast.length}>
+                View All
+              </ViewAllBtn>
+            </div>
+            <CastForm onSubmit={updateCast} />
+          </div>
+          <Submit value="Upload" onClick={handleSubmit} type='button'/>
         </div>
         <div className="w-[30%] h-5 bg-blue-400 "></div>
-      </form>
+      </div>
       <WritersModal
         onClose={hideWritersModal}
         profiles={writers}
         visible={showWriterModal}
         onRemoveClick={handleWriterRemove}
+      />
+
+      <CastModal
+        onClose={hideCastModal}
+        casts={cast}
+        visible={showCastModal}
+        onRemoveClick={handleCastRemove}
       />
     </>
   );
@@ -221,11 +263,11 @@ const Label = ({ children, htmlFor }) => {
   );
 };
 
-const LabelWithBadge = ({ children, htmlFor, badge }) => {
+const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   const renderBadge = () => {
+    if (!badge) return null;
     return (
       <span className="dark:bg-dark-subtle bg-light-subtle text-white absolute top-0 right-0 translate-x-2 -translate-y-1 text-xs w-5 h-5 rounded-full flex justify-center items-center">
-        {" "}
         {badge <= 9 ? badge : "9+"}
       </span>
     );
@@ -240,5 +282,18 @@ const LabelWithBadge = ({ children, htmlFor, badge }) => {
       </label>
       {renderBadge()}
     </div>
+  );
+};
+
+const ViewAllBtn = ({ visible, children, onClick }) => {
+  if (!visible) return null;
+  return (
+    <button
+      onClick={onClick}
+      type='button'
+      className="dark:text-white text-primary hover:underline transition"
+    >
+      {children}
+    </button> 
   );
 };
