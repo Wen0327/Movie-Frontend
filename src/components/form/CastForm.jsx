@@ -75,7 +75,6 @@ export default function CastForm({onSubmit}) {
 
       <button
         onClick={handleSubmit}
-        type="button"
         className="bg-secondary dark:bg-white dark:text-primary text-white px-1 rounded"
       >
         Add

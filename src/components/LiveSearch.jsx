@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { commonInputClasses } from "../utils/theme";
 
 export default function LiveSearch({
-  defaultValue = "",
+  value = "",
   placeholder = "",
   results = [],
   name,
@@ -15,6 +15,7 @@ export default function LiveSearch({
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
+  const [defaultValue, setDefaultValue] = useState("");
 
   const handleOnFocus = () => {
     if (results.length) setDisplaySearch(true);
@@ -53,8 +54,7 @@ export default function LiveSearch({
       nextCount = (focusIndex + results.length - 1) % results.length;
     }
 
-    if (key === "Escape") return closeSearch()
-
+    if (key === "Escape") return closeSearch();
 
     if (key === "Enter") return handleSelection(results[focusIndex]);
 
@@ -66,9 +66,20 @@ export default function LiveSearch({
       ? inputStyle
       : commonInputClasses + " border-2 rounded p-1 text-lg";
   };
+
+  const handleChange =(e)=>{
+    setDefaultValue(e.target.value);
+    onChange && onChange(e);
+  }
+
+  useEffect(() => {
+    if (value) setDefaultValue(value);
+  }, [value]);
+
   return (
     <div className="relative outline-none">
       <input
+        autoComplete="off"
         type="text"
         id={name}
         name={name}
@@ -77,8 +88,8 @@ export default function LiveSearch({
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
         onKeyDown={handleKeyDown}
-        defaultValue={defaultValue}
-        onChange={onChange}
+        value={defaultValue}
+        onChange={handleChange}
       />
       <SearchResults
         focusIndex={focusIndex}

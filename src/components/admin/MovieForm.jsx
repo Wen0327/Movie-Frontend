@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { useNotification } from "../../hook";
+import {
+  languageOptions,
+  statusOptions,
+  typeOptions,
+} from "../../utils/options";
 import { commonInputClasses } from "../../utils/theme";
 import CastForm from "../form/CastForm";
 import Submit from "../form/Submit";
+import GenreSelector from "../GenreSelector";
 import LiveSearch from "../LiveSearch";
 import CastModal from "../modal/CastModal";
+import GenresModal from "../modal/GenresModal";
 import WritersModal from "../modal/WritersModal";
+import PosterSelector from "../PosterSelector";
+import Selector from "../Selector";
 import TagsInput from "../TagsInput";
 
 export const results = [
@@ -79,6 +88,9 @@ export default function MovieForm() {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWriterModal, setShowWriterModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
+  const [showGenresModal, setShowGenresModal] = useState(false);
+
+  const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
   const { updateNotification } = useNotification();
 
@@ -87,8 +99,18 @@ export default function MovieForm() {
     console.log(movieInfo);
   };
 
+  const updatePosterForUI = (file) => {
+    const url = URL.createObjectURL(file);
+    setSelectedPosterForUI(url);
+  };
+
   const handleChange = ({ target }) => {
-    const { value, name } = target;
+    const { value, name, files } = target;
+    if (name === "poster") {
+      const poster = files[0];
+      updatePosterForUI(poster);
+      return setMovieInfo({ ...movieInfo, poster });
+    }
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
@@ -103,6 +125,11 @@ export default function MovieForm() {
   const updateCast = (castInfo) => {
     const { cast } = movieInfo;
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
+  };
+
+  const updateGenres = (genres) => {
+    const { cast } = movieInfo;
+    setMovieInfo({ ...movieInfo, genres });
   };
 
   const updateWriters = (profile) => {
@@ -134,6 +161,14 @@ export default function MovieForm() {
     setShowCastModal(true);
   };
 
+  const hideGenresModal = () => {
+    setShowGenresModal(false);
+  };
+
+  const displayGenresModal = () => {
+    setShowGenresModal(true);
+  };
+
   const handleWriterRemove = (profileId) => {
     const { writers } = movieInfo;
     const newWriters = writers.filter(({ id }) => id !== profileId);
@@ -148,14 +183,11 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
-
-  
-
-  const { title, storyLine, director, writers, cast } = movieInfo;
+  const { title, storyLine, director, writers, cast, tags, genres, type, language, status } = movieInfo;
   return (
     <>
-      <div autoComplete="off"  className="flex space-x-3">
-        <div className="w-[70%] h-5 space-y-5">
+      <div autoComplete="off" className="flex space-x-3">
+        <div className="w-[70%] space-y-5">
           <div>
             <Label htmlFor="title">Title</Label>
             <input
@@ -185,14 +217,14 @@ export default function MovieForm() {
 
           <div>
             <Label htmlFor="tags">Tags</Label>
-            <TagsInput name="tags" onChange={updateTags} />
+            <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
           <div>
             <Label htmlFor="director">Director</Label>
             <LiveSearch
               name="director"
-              defaultValue={director.name}
+              value={director.name}
               placeholder="Search profile"
               results={results}
               renderItem={renderItem}
@@ -231,10 +263,49 @@ export default function MovieForm() {
             </div>
             <CastForm onSubmit={updateCast} />
           </div>
-          <Submit value="Upload" onClick={handleSubmit} type='button'/>
+
+          <input
+            type="date"
+            onChange={handleChange}
+            name="releaseDate"
+            className={commonInputClasses + " border-2 rounded p-1 w-auto"}
+          />
+
+          <Submit value="Upload" onClick={handleSubmit} type="button" />
         </div>
-        <div className="w-[30%] h-5 bg-blue-400 "></div>
+        <div className="w-[30%] space-y-5 ">
+          <PosterSelector
+            name="poster"
+            onChange={handleChange}
+            selectedPoster={selectedPosterForUI}
+            accept="image/jpg, image/jpeg, image/png"
+          />
+          <GenreSelector badge={genres.length} onClick={displayGenresModal} />
+
+          <Selector
+            onChange={handleChange}
+            name="type"
+            value={type}
+            options={typeOptions}
+            label="Type"
+          />
+          <Selector
+            onChange={handleChange}
+            name="language"
+            value={language}
+            options={languageOptions}
+            label="Language"
+          />
+          <Selector
+            onChange={handleChange}
+            name="status"
+            value={status}
+            options={statusOptions}
+            label="Status"
+          />
+        </div>
       </div>
+
       <WritersModal
         onClose={hideWritersModal}
         profiles={writers}
@@ -247,6 +318,12 @@ export default function MovieForm() {
         casts={cast}
         visible={showCastModal}
         onRemoveClick={handleCastRemove}
+      />
+      <GenresModal
+        onSubmit={updateGenres}
+        visible={showGenresModal}
+        onClose={hideGenresModal}
+        previousSelection={genres}
       />
     </>
   );
@@ -272,6 +349,7 @@ const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
       </span>
     );
   };
+
   return (
     <div className="relative">
       <label
@@ -290,10 +368,10 @@ const ViewAllBtn = ({ visible, children, onClick }) => {
   return (
     <button
       onClick={onClick}
-      type='button'
+      type="button"
       className="dark:text-white text-primary hover:underline transition"
     >
       {children}
-    </button> 
+    </button>
   );
 };
