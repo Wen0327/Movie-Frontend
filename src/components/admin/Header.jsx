@@ -31,7 +31,7 @@ export default function Header({onAddMovieClick,onAddActorClick}) {
         </button>
         <button
           onClick={() => setShowOptions(true)}
-          className="flex items-center space-x-2 dark:border-dark-subtle border-light-subtle border-secondary  text-secondary hover:opacity-80 transition font-semibold border-2 rounded text-lg px-3 py-1"
+          className="flex items-center space-x-2 dark:border-dark-subtle border-light-subtle border-secondary  text-secondary hover:opacity-80 transition font-semibold border-2 rounded text-lg px-3 py-1 dark:text-white text-light-subtle"
         >
           <span>Create</span>
           <AiOutlinePlus />
@@ -78,6 +78,12 @@ const CreateOptions = ({ options, visible, onClose }) => {
     e.target.classList.remove("animate-scale");
   };
 
+  // auto close the option when click a fn
+  const handleClick = (fn)=>{
+    fn()
+    onClose()
+  }
+
   if (!visible) return null;
 
   return (
@@ -88,7 +94,7 @@ const CreateOptions = ({ options, visible, onClose }) => {
       onAnimationEnd={handleAnimationEnd}
     >
       {options.map(({ title, onClick }) => {
-        return <Option onClick={onClick}>{title}</Option>;
+        return <Option onClick={()=> handleClick(onClick) }>{title}</Option>;
       })}
     </div>
   );
