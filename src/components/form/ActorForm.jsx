@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { commonInputClasses } from "../../utils/theme";
 import PosterSelector from "../PosterSelector";
+import Selector from "../Selector";
 
 const defaultActionInfo = {
   name: "",
   about: "",
   avatar: null,
+  gender: "",
 };
+
+const genderOptions = [
+  { title: "Male", value: "male" },
+  { title: "Female", value: "female" },
+  { title: "Other", value: "other" },
+];
 
 export default function ActorForm({ title, btnTitle }) {
   const [actorInfo, setActorInfo] = useState({ ...defaultActionInfo });
@@ -28,7 +36,7 @@ export default function ActorForm({ title, btnTitle }) {
     setActorInfo({ ...actorInfo, [name]: value });
   };
 
-  const { name, about } = actorInfo;
+  const { name, about, gender } = actorInfo;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,6 +86,15 @@ export default function ActorForm({ title, btnTitle }) {
             value={about}
           ></textarea>
         </div>
+      </div>
+      <div className="mt-3">
+        <Selector
+          options={genderOptions}
+          label="Gender"
+          value={gender}
+          onChange={handleChange}
+          name="gender"
+        />
       </div>
     </form>
   );
