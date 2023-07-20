@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { commonInputClasses } from "../../utils/theme";
 import PosterSelector from "../PosterSelector";
 import Selector from "../Selector";
+import { useNotification } from "../../hook";
 
 const defaultActionInfo = {
   name: "",
@@ -16,9 +17,20 @@ const genderOptions = [
   { title: "Other", value: "other" },
 ];
 
-export default function ActorForm({ title, btnTitle }) {
+const validateActor = ({ avatar, name, about, gender }) => {
+  if (!name.trim()) return { error: "Actor name is missing!" };
+  if (!about.trim()) return { error: "About section is missing!" };
+  if (!gender.trim()) return { error: "Actor gender is missing!" };
+  if (avatar && !avatar.type?.startsWith("image"))
+    return { error: "Invalid image/avatar file!" };
+
+  return { error: null };
+};
+
+export default function ActorForm({ title, btnTitle, onSubmit }) {
   const [actorInfo, setActorInfo] = useState({ ...defaultActionInfo });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
+  const { updateNotification } = useNotification();
 
   const updatePosterForUI = (file) => {
     const url = URL.createObjectURL(file);
@@ -40,7 +52,11 @@ export default function ActorForm({ title, btnTitle }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(actorInfo);
+    const { error } = validateActor(actorInfo);
+    if (error) return updateNotification("error", error);
+
+    //submit
+    onSubmit(actorInfo)
   };
 
   return (
