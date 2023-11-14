@@ -11,7 +11,7 @@ export default function ActorUpload({ visible, onClose }) {
     if (error) {
       return updateNotification("error", error);
     }
-    updateNotification("Success", "Actor created successfully.");
+    updateNotification("success", "Actor created successfully.");
     onClose();
   };
 
