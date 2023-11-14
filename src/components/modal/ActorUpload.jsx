@@ -2,12 +2,17 @@ import React from "react";
 import ActorForm from "../form/ActorForm";
 import ModalContainer from "./ModalContainer";
 import { createActor } from "../../api/actor";
+import { useNotification } from "../../hook";
 
 export default function ActorUpload({ visible, onClose }) {
-  const handleSubmit = async(data) => {
-
-    const res = await createActor(data);
-    console.log(res)
+  const { updateNotification } = useNotification();
+  const handleSubmit = async (data) => {
+    const { error, actor } = await createActor(data);
+    if (error) {
+      return updateNotification("error", error);
+    }
+    updateNotification("Success", "Actor created successfully.");
+    onClose();
   };
 
   return (
