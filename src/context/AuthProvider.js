@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getIsAuth, signInUser } from "../api/auth";
 import { useNotification } from "../hook";
+import { getToken } from "../utils/helper";
 
 export const AuthContext = createContext();
 
@@ -40,7 +41,7 @@ export default function AuthProvider({ children }) {
 
   //check
   const isAuth = async () => {
-    const token = localStorage.getItem("auth-token");
+    const token = getToken()
     if (!token) return;
 
     setAuthInfo({ ...authInfo, isPending: true });

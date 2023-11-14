@@ -1,7 +1,8 @@
 import client from "./clint";
+import { getToken, catchError } from "../utils/helper";
 
 export const createActor = async (formData) => {
-  const token = localStorage.getItem("auth-token");
+  const token = getToken();
   try {
     const { data } = await client.post("/actor/create", formData, {
       headers: {
@@ -11,9 +12,6 @@ export const createActor = async (formData) => {
     });
     return data;
   } catch (error) {
-    const { response } = error;
-    if (response?.data) return response.data;
-
-    return { error: error.message || error };
+    return catchError(error);
   }
 };
