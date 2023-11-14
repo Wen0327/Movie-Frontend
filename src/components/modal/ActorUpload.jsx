@@ -4,9 +4,10 @@ import ModalContainer from "./ModalContainer";
 import { createActor } from "../../api/actor";
 
 export default function ActorUpload({ visible, onClose }) {
-  const handleSubmit = (data) => {
-    console.log(data);
-    createActor(data);
+  const handleSubmit = async(data) => {
+
+    const res = await createActor(data);
+    console.log(res)
   };
 
   return (

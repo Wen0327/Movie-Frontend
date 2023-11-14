@@ -56,7 +56,13 @@ export default function ActorForm({ title, btnTitle, onSubmit }) {
     if (error) return updateNotification("error", error);
 
     //submit
-    onSubmit(actorInfo)
+    const formData = new FormData();
+    for (let key in actorInfo) {
+      if (key) {
+        formData.append(key, actorInfo[key]);
+      }
+    }
+    onSubmit(formData);
   };
 
   return (
