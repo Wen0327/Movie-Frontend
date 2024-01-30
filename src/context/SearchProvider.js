@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNotification } from "../hook";
 
 export const SearchContext = createContext();
@@ -16,9 +16,9 @@ const debounce = (func, delay) => {
 };
 
 export default function SearchProvider({ children }) {
-  const [searching, setSearching] = useEffect(false);
-  const [results, setResults] = useEffect([]);
-  const [resultNotFound, setResultNotFound] = useEffect(false);
+  const [searching, setSearching] = useState(false);
+  const [results, setResults] = useState([]);
+  const [resultNotFound, setResultNotFound] = useState(false);
 
   const { updateNotification } = useNotification();
 
