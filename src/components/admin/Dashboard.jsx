@@ -25,7 +25,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-14">
-      <input type="text" className="border border-gray-500"></input>
+      <input type="text" onChange={handleChange} className="border border-gray-500"></input>
     </div>
   );
 }
