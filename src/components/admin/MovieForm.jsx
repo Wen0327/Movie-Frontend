@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNotification } from "../../hook";
+import { useNotification, useSearch } from "../../hook";
 import {
   languageOptions,
   statusOptions,
@@ -16,6 +16,7 @@ import WritersModal from "../modal/WritersModal";
 import PosterSelector from "../PosterSelector";
 import Selector from "../Selector";
 import TagsInput from "../TagsInput";
+import { searchActor } from "../../api/actor";
 
 export const results = [
   {
@@ -93,6 +94,7 @@ export default function MovieForm() {
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
   const { updateNotification } = useNotification();
+  const { handleSearch, searching, results } = useSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -183,7 +185,23 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
-  const { title, storyLine, director, writers, cast, tags, genres, type, language, status } = movieInfo;
+  const handleProfileChange = ({ target }) => {
+    setMovieInfo({ ...movieInfo, director: { name: target.value } });
+    handleSearch(searchActor, target.value);
+  };
+
+  const {
+    title,
+    storyLine,
+    director,
+    writers,
+    cast,
+    tags,
+    genres,
+    type,
+    language,
+    status,
+  } = movieInfo;
   return (
     <>
       <div autoComplete="off" className="flex space-x-3">
@@ -229,6 +247,7 @@ export default function MovieForm() {
               results={results}
               renderItem={renderItem}
               onSelect={updateDirector}
+              onChange={handleProfileChange}
             />
           </div>
 
@@ -279,7 +298,7 @@ export default function MovieForm() {
             onChange={handleChange}
             selectedPoster={selectedPosterForUI}
             accept="image/jpg, image/jpeg, image/png"
-            label='Select Poster'
+            label="Select Poster"
           />
           <GenreSelector badge={genres.length} onClick={displayGenresModal} />
 
