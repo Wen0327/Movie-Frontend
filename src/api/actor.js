@@ -16,10 +16,10 @@ export const createActor = async (formData) => {
   }
 };
 
-export const searchActor = async (formData) => {
+export const searchActor = async (query) => {
   const token = getToken();
   try {
-    const { data } = await client(`/actor/search?name=${query}`, formData, {
+    const { data } = await client(`/actor/search?name=${query}`, {
       headers: {
         authorization: "Bearer " + token,
         "content-type": "multipart/form-data",
