@@ -12,6 +12,7 @@ export default function LiveSearch({
   renderItem = null,
   onChange = null,
   onSelect = null,
+  visible,
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -67,14 +68,20 @@ export default function LiveSearch({
       : commonInputClasses + " border-2 rounded p-1 text-lg";
   };
 
-  const handleChange =(e)=>{
+  const handleChange = (e) => {
     setDefaultValue(e.target.value);
     onChange && onChange(e);
-  }
+  };
 
   useEffect(() => {
     if (value) setDefaultValue(value);
   }, [value]);
+
+  useEffect(() => {
+    if (visible) return setDisplaySearch(visible);
+
+    setDisplaySearch(false);
+  }, [visible]);
 
   return (
     <div className="relative outline-none">

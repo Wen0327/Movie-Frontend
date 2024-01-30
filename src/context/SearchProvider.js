@@ -40,17 +40,21 @@ export default function SearchProvider({ children }) {
   const handleSearch = (method, query) => {
     setSearching(true);
     if (!query.trim()) {
-      setSearching(false);
-      setResults([]);
-      setResultNotFound(false);
+      resetSearch();
     }
 
     debounceFunc(method, query);
   };
 
+  const resetSearch = () => {
+    setSearching(false);
+    setResults([]);
+    setResultNotFound(false);
+  };
+
   return (
     <SearchContext.Provider
-      value={(handleSearch, searching, resultNotFound, results)}
+      value={(handleSearch, resetSearch, searching, resultNotFound, results)}
     >
       {children}
     </SearchContext.Provider>
