@@ -54,7 +54,7 @@ export default function SearchProvider({ children }) {
 
   return (
     <SearchContext.Provider
-      value={(handleSearch, resetSearch, searching, resultNotFound, results)}
+      value={{handleSearch, resetSearch, searching, resultNotFound, results}}
     >
       {children}
     </SearchContext.Provider>

@@ -95,7 +95,7 @@ export default function MovieForm() {
   const [writerName, setWriterName] = useState("");
 
   const { updateNotification } = useNotification();
-  const { handleSearch, resetSearch, results } = useSearch();
+  const{ handleSearch, results, resetSearch } = useSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -194,7 +194,7 @@ export default function MovieForm() {
       setMovieInfo({ ...movieInfo, director: { name: value } });
     }
 
-    if (name === "writer") {
+    if (name === "writers") {
       setWriterName(value);
     }
 
@@ -259,7 +259,7 @@ export default function MovieForm() {
               renderItem={renderItem}
               onSelect={updateDirector}
               onChange={handleProfileChange}
-              visible={results.length}
+              // visible={results.length}
             />
           </div>
 
@@ -283,7 +283,7 @@ export default function MovieForm() {
               onSelect={updateWriters}
               onChange={handleProfileChange}
               value={writerName}
-              visible={results.length}
+              // visible={results.length}
             />
           </div>
           <div>
