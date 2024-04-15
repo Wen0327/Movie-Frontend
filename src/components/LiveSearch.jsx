@@ -28,16 +28,14 @@ export default function LiveSearch({
   };
 
   const handleOnBlur = () => {
-    setTimeout(() => {
-      closeSearch();
-    }, 100);
+    closeSearch();
   };
 
   const handleSelection = (selectedItem) => {
     if (selectedItem) {
       onSelect(selectedItem);
+      closeSearch();
     }
-    closeSearch();
   };
 
   const handleKeyDown = ({ key }) => {
@@ -84,7 +82,12 @@ export default function LiveSearch({
   }, [visible]);
 
   return (
-    <div className="relative outline-none">
+    <div
+      tabIndex={1}
+      onKeyDown={handleKeyDown}
+      onBlur={handleOnBlur}
+      className="relative outline-none"
+    >
       <input
         autoComplete="off"
         type="text"
@@ -93,8 +96,8 @@ export default function LiveSearch({
         className={getInputStyle()}
         placeholder={placeholder}
         onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-        onKeyDown={handleKeyDown}
+        // onBlur={handleOnBlur}
+        // onKeyDown={handleKeyDown}
         value={defaultValue}
         onChange={handleChange}
       />
@@ -110,6 +113,15 @@ export default function LiveSearch({
     </div>
   );
 }
+
+// const renderItem = ({ id, name, avatar }) => {
+//   return (
+//     <div className="flex">
+//       <img src={avatar} alt="" />
+//       <p>{name}</p>
+//     </div>
+//   );
+// };
 
 const SearchResults = ({
   visible,
