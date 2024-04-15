@@ -6,8 +6,9 @@ export default function LiveSearch({
   placeholder = "",
   results = [],
   name,
+  resultresultContainerStyle,
   selectedResultStyle,
-  containerStyle,
+  resultContainerStyle,
   inputStyle,
   renderItem = null,
   onChange = null,
@@ -104,7 +105,7 @@ export default function LiveSearch({
         results={results}
         onSelect={handleSelection}
         renderItem={renderItem}
-        containerStyle={containerStyle}
+        resultContainerStyle={resultContainerStyle}
         selectedResultStyle={selectedResultStyle}
       />
     </div>
@@ -117,7 +118,7 @@ const SearchResults = ({
   focusIndex,
   onSelect,
   renderItem,
-  containerStyle,
+  resultContainerStyle,
   selectedResultStyle,
 }) => {
   const resultContainer = useRef();
@@ -141,11 +142,11 @@ const SearchResults = ({
 
         return (
           <ResultCard
-            ref={index === focusIndex ? resultContainer : null}
+            // ref={index === focusIndex ? resultContainer : null}
             key={index.toString()}
             item={result}
             renderItem={renderItem}
-            containerStyle={containerStyle}
+            resultContainerStyle={resultContainerStyle}
             selectedResultStyle={index === focusIndex ? getSelectedClass() : ""}
             onMouseDown={() => onSelect(result)}
           />
@@ -156,11 +157,17 @@ const SearchResults = ({
 };
 
 const ResultCard = forwardRef((props, ref) => {
-  const { item, renderItem, containerStyle, selectedResultStyle, onMouseDown } =
-    props;
+  const {
+    item,
+    renderItem,
+    resultContainerStyle,
+    selectedResultStyle,
+    onMouseDown,
+  } = props;
 
   const getClasses = () => {
-    if (containerStyle) return containerStyle + " " + selectedResultStyle;
+    if (resultContainerStyle)
+      return resultContainerStyle + " " + selectedResultStyle;
 
     return (
       selectedResultStyle +

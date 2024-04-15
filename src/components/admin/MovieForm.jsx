@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { searchActor } from "../../api/actor";
 import { useNotification, useSearch } from "../../hook";
 import {
   languageOptions,
@@ -16,7 +17,6 @@ import WritersModal from "../modal/WritersModal";
 import PosterSelector from "../PosterSelector";
 import Selector from "../Selector";
 import TagsInput from "../TagsInput";
-import { searchActor } from "../../api/actor";
 
 export const results = [
   {
@@ -95,7 +95,7 @@ export default function MovieForm() {
   const [writerName, setWriterName] = useState("");
 
   const { updateNotification } = useNotification();
-  const { handleSearch, resetSearch, searching, results } = useSearch();
+  const { handleSearch, resetSearch, results } = useSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
