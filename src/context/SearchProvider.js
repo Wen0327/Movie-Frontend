@@ -22,7 +22,7 @@ export default function SearchProvider({ children }) {
 
   const { updateNotification } = useNotification();
 
-  const search = async (method, query) => {
+  const search = async (method, query, updateFunc) => {
     const { error, results } = await method(query);
     if (error) {
       return updateNotification("error", error);
@@ -33,17 +33,19 @@ export default function SearchProvider({ children }) {
     }
 
     setResults(results);
+    updateFunc([...results]);
   };
 
   const debounceFunc = debounce(search, 300);
 
-  const handleSearch = (method, query) => {
+  const handleSearch = (method, query, updateFunc) => {
     setSearching(true);
     if (!query.trim()) {
+      updateFunc([]);
       resetSearch();
     }
 
-    debounceFunc(method, query);
+    debounceFunc(method, query, updateFunc);
   };
 
   const resetSearch = () => {
@@ -54,7 +56,7 @@ export default function SearchProvider({ children }) {
 
   return (
     <SearchContext.Provider
-      value={{handleSearch, resetSearch, searching, resultNotFound, results}}
+      value={{ handleSearch, resetSearch, searching, resultNotFound, results }}
     >
       {children}
     </SearchContext.Provider>

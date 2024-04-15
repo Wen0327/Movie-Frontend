@@ -94,8 +94,11 @@ export default function MovieForm() {
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
   const [writerName, setWriterName] = useState("");
 
+  const [writersProfile, setWritersProfile] = useState([]);
+  const [directorsProfile, setDirectorsProfile] = useState([]);
+
   const { updateNotification } = useNotification();
-  const{ handleSearch, results, resetSearch } = useSearch();
+  const { handleSearch, results, resetSearch } = useSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -192,13 +195,15 @@ export default function MovieForm() {
 
     if (name === "director") {
       setMovieInfo({ ...movieInfo, director: { name: value } });
+      handleSearch(searchActor, value,setDirectorsProfile );
     }
 
     if (name === "writers") {
       setWriterName(value);
+      handleSearch(searchActor, value,setWritersProfile );
     }
 
-    handleSearch(searchActor, value);
+    
   };
 
   const {
@@ -255,11 +260,11 @@ export default function MovieForm() {
               name="director"
               value={director.name}
               placeholder="Search profile"
-              results={results}
+              results={directorsProfile}
               renderItem={renderItem}
               onSelect={updateDirector}
               onChange={handleProfileChange}
-              visible={results.length}
+              visible={directorsProfile.length}
             />
           </div>
 
@@ -278,12 +283,12 @@ export default function MovieForm() {
             <LiveSearch
               name="writers"
               placeholder="Search profile"
-              results={results}
+              results={writersProfile}
               renderItem={renderItem}
               onSelect={updateWriters}
               onChange={handleProfileChange}
               value={writerName}
-              visible={results.length}
+              visible={writersProfile.length}
             />
           </div>
           <div>
