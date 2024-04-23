@@ -150,6 +150,8 @@ export default function MovieForm() {
       }
     }
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
+    // to reset the input field
+    setWriterName("");
   };
 
   const hideWritersModal = () => {
@@ -195,15 +197,13 @@ export default function MovieForm() {
 
     if (name === "director") {
       setMovieInfo({ ...movieInfo, director: { name: value } });
-      handleSearch(searchActor, value,setDirectorsProfile );
+      handleSearch(searchActor, value, setDirectorsProfile);
     }
 
     if (name === "writers") {
       setWriterName(value);
-      handleSearch(searchActor, value,setWritersProfile );
+      handleSearch(searchActor, value, setWritersProfile);
     }
-
-    
   };
 
   const {

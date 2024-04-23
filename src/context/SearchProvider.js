@@ -33,7 +33,7 @@ export default function SearchProvider({ children }) {
     }
 
     setResults(results);
-    updateFunc([...results]);
+    updateFunc && updateFunc([...results]);
   };
 
   const debounceFunc = debounce(search, 300);
