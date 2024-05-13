@@ -17,6 +17,9 @@ import WritersModal from "../modal/WritersModal";
 import PosterSelector from "../PosterSelector";
 import Selector from "../Selector";
 import TagsInput from "../TagsInput";
+import { Label } from "../Label";
+import DirectorSelector from "../DirectorSelector";
+import { renderItem } from "../../utils/helper";
 
 export const results = [
   {
@@ -56,19 +59,6 @@ export const results = [
     name: "Edward Howell",
   },
 ];
-
-export const renderItem = (result) => {
-  return (
-    <div className="flex space-x-2 rounded overflow-hidden">
-      <img
-        className="w-16 h-16 object-cover"
-        src={result.avatar}
-        alt={result.name}
-      />
-      <p className="dark:text-white font-semibold">{result.name}</p>
-    </div>
-  );
-};
 
 const defaultMovieInfo = {
   title: "",
@@ -126,7 +116,6 @@ export default function MovieForm() {
 
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
-    resetSearch();
   };
 
   const updateCast = (castInfo) => {
@@ -254,19 +243,7 @@ export default function MovieForm() {
             <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
-          <div>
-            <Label htmlFor="director">Director</Label>
-            <LiveSearch
-              name="director"
-              value={director.name}
-              placeholder="Search profile"
-              results={directorsProfile}
-              renderItem={renderItem}
-              onSelect={updateDirector}
-              onChange={handleProfileChange}
-              visible={directorsProfile.length}
-            />
-          </div>
+          <DirectorSelector onSelect={updateDirector} />
 
           <div>
             <div className="flex justify-between">
@@ -368,17 +345,6 @@ export default function MovieForm() {
     </>
   );
 }
-
-const Label = ({ children, htmlFor }) => {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className="dark:text-dark-subtle text-light-subtle font-semibold"
-    >
-      {children}
-    </label>
-  );
-};
 
 const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
   const renderBadge = () => {
