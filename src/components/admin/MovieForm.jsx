@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { searchActor } from "../../api/actor";
-import { useNotification, useSearch } from "../../hook";
+import { useNotification } from "../../hook";
 import {
   languageOptions,
   statusOptions,
@@ -10,7 +9,6 @@ import { commonInputClasses } from "../../utils/theme";
 import CastForm from "../form/CastForm";
 import Submit from "../form/Submit";
 import GenreSelector from "../GenreSelector";
-import LiveSearch from "../LiveSearch";
 import CastModal from "../modal/CastModal";
 import GenresModal from "../modal/GenresModal";
 import WritersModal from "../modal/WritersModal";
@@ -19,46 +17,10 @@ import Selector from "../Selector";
 import TagsInput from "../TagsInput";
 import { Label } from "../Label";
 import DirectorSelector from "../DirectorSelector";
-import { renderItem } from "../../utils/helper";
+import WriterSelector from "../WriterSelector";
+import { ViewAllBtn } from "../ViewAllButton";
+import { LabelWithBadge } from "../LabelWithBadge";
 
-export const results = [
-  {
-    id: "1",
-    avatar:
-      "https://images.unsplash.com/photo-1643713303351-01f540054fd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "John Doe",
-  },
-  {
-    id: "2",
-    avatar:
-      "https://images.unsplash.com/photo-1643883135036-98ec2d9e50a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Chandri Anggara",
-  },
-  {
-    id: "3",
-    avatar:
-      "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Amin RK",
-  },
-  {
-    id: "4",
-    avatar:
-      "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Edward Howell",
-  },
-  {
-    id: "5",
-    avatar:
-      "https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Amin RK",
-  },
-  {
-    id: "6",
-    avatar:
-      "https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80",
-    name: "Edward Howell",
-  },
-];
 
 const defaultMovieInfo = {
   title: "",
@@ -80,15 +42,8 @@ export default function MovieForm() {
   const [showWriterModal, setShowWriterModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
-
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
-  const [writerName, setWriterName] = useState("");
-
-  const [writersProfile, setWritersProfile] = useState([]);
-  const [directorsProfile, setDirectorsProfile] = useState([]);
-
   const { updateNotification } = useNotification();
-  const { handleSearch, results, resetSearch } = useSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -139,8 +94,6 @@ export default function MovieForm() {
       }
     }
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
-    // to reset the input field
-    setWriterName("");
   };
 
   const hideWritersModal = () => {
@@ -181,24 +134,9 @@ export default function MovieForm() {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
-  const handleProfileChange = ({ target }) => {
-    const { name, value } = target;
-
-    if (name === "director") {
-      setMovieInfo({ ...movieInfo, director: { name: value } });
-      handleSearch(searchActor, value, setDirectorsProfile);
-    }
-
-    if (name === "writers") {
-      setWriterName(value);
-      handleSearch(searchActor, value, setWritersProfile);
-    }
-  };
-
   const {
     title,
     storyLine,
-    director,
     writers,
     cast,
     tags,
@@ -257,16 +195,7 @@ export default function MovieForm() {
                 View All
               </ViewAllBtn>
             </div>
-            <LiveSearch
-              name="writers"
-              placeholder="Search profile"
-              results={writersProfile}
-              renderItem={renderItem}
-              onSelect={updateWriters}
-              onChange={handleProfileChange}
-              value={writerName}
-              visible={writersProfile.length}
-            />
+            <WriterSelector onSelect={updateWriters} />
           </div>
           <div>
             <div className="flex justify-between">
@@ -345,39 +274,3 @@ export default function MovieForm() {
     </>
   );
 }
-
-const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
-  const renderBadge = () => {
-    if (!badge) return null;
-    return (
-      <span className="dark:bg-dark-subtle bg-light-subtle text-white absolute top-0 right-0 translate-x-2 -translate-y-1 text-xs w-5 h-5 rounded-full flex justify-center items-center">
-        {badge <= 9 ? badge : "9+"}
-      </span>
-    );
-  };
-
-  return (
-    <div className="relative">
-      <label
-        className="dark:text-dark-subtle text-light-subtle font-semibold"
-        htmlFor={htmlFor}
-      >
-        {children}
-      </label>
-      {renderBadge()}
-    </div>
-  );
-};
-
-const ViewAllBtn = ({ visible, children, onClick }) => {
-  if (!visible) return null;
-  return (
-    <button
-      onClick={onClick}
-      type="button"
-      className="dark:text-white text-primary hover:underline transition"
-    >
-      {children}
-    </button>
-  );
-};

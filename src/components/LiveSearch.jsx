@@ -12,7 +12,6 @@ export default function LiveSearch({
   renderItem = null,
   onChange = null,
   onSelect = null,
-
 }) {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusIndex, setFocusIndex] = useState(-1);
@@ -72,7 +71,7 @@ export default function LiveSearch({
   };
 
   useEffect(() => {
-    if (value) setDefaultValue(value);
+    setDefaultValue(value);
   }, [value]);
 
   useEffect(() => {
