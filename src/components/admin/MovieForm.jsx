@@ -37,17 +37,7 @@ const defaultMovieInfo = {
 };
 
 const validateMovie = (movieInfo) => {
-  const {
-    title,
-    storyLine,
-    status,
-    type,
-    language,
-    releaseDate,
-    tags,
-    genres,
-    cast,
-  } = movieInfo;
+  const { tags, genres, cast } = movieInfo;
 
   const validators = [
     { field: "title", errorMessage: "Title is missing!" },
