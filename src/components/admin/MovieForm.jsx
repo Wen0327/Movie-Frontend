@@ -85,6 +85,8 @@ const validateMovie = (movieInfo) => {
   for (let c of cast) {
     if (typeof c !== "object") return { error: "Invalid cast" };
   }
+
+  return { error: null };
 };
 
 export default function MovieForm() {
@@ -98,7 +100,10 @@ export default function MovieForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { error } = validateMovie(movieInfo);
-    console.log(error);
+    if (error) {
+      console.log(error);
+    }
+    console.log(movieInfo);
   };
 
   const updatePosterForUI = (file) => {
