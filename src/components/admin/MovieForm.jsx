@@ -21,7 +21,6 @@ import WriterSelector from "../WriterSelector";
 import { ViewAllBtn } from "../ViewAllButton";
 import { LabelWithBadge } from "../LabelWithBadge";
 
-
 const defaultMovieInfo = {
   title: "",
   storyLine: "",
@@ -37,9 +36,40 @@ const defaultMovieInfo = {
   status: "",
 };
 
-const validateMovie = (movieInfo)=>{
-  console.log(movieInfo)
-}
+const validateMovie = (movieInfo) => {
+  const {
+    title,
+    storyLine,
+    status,
+    type,
+    language,
+    releaseDate,
+    tags,
+    genres,
+    cast,
+  } = movieInfo;
+
+  const validators = [
+    { field: 'title', errorMessage: 'Title is missing!' },
+    { field: 'storyLine', errorMessage: 'Storyline is missing!' },
+    { field: 'status', errorMessage: 'Status is missing!' },
+    { field: 'type', errorMessage: 'Type is missing!' },
+    { field: 'language', errorMessage: 'Language is missing!' },
+    { field: 'releaseDate', errorMessage: 'Release Date is missing!' },
+    { field: 'tags', errorMessage: 'Tags are missing!' },
+    { field: 'genres', errorMessage: 'Genres are missing!' },
+    { field: 'cast', errorMessage: 'Cast is missing!' },
+  ]
+
+  for(const {field,errorMessage} of validators){
+    console.log(movieInfo[field],field)
+    if (!movieInfo[field].trim()) {
+      return { error: errorMessage };
+    }
+  }
+
+  
+};
 
 export default function MovieForm() {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
@@ -51,7 +81,8 @@ export default function MovieForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    validateMovie(movieInfo);
+    const { error } = validateMovie(movieInfo);
+    console.log(error);
   };
 
   const updatePosterForUI = (file) => {

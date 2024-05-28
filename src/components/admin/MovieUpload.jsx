@@ -30,7 +30,7 @@ export default function MovieUpload({ visible, onClose }) {
     updateNotification("error", error);
   };
 
-  console.log(videoInfo);
+  // console.log(videoInfo);
 
   const handleChange = (file) => {
     const formData = new FormData();
