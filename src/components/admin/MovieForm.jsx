@@ -50,27 +50,43 @@ const validateMovie = (movieInfo) => {
   } = movieInfo;
 
   const validators = [
-    { field: 'title', errorMessage: 'Title is missing!' },
-    { field: 'storyLine', errorMessage: 'Storyline is missing!' },
-    { field: 'status', errorMessage: 'Status is missing!' },
-    { field: 'type', errorMessage: 'Type is missing!' },
-    { field: 'language', errorMessage: 'Language is missing!' },
-    { field: 'releaseDate', errorMessage: 'Release Date is missing!' },
-    { field: 'tags', errorMessage: 'Tags are missing!' },
-    { field: 'genres', errorMessage: 'Genres are missing!' },
-    { field: 'cast', errorMessage: 'Cast is missing!' },
-  ]
+    { field: "title", errorMessage: "Title is missing!" },
+    { field: "storyLine", errorMessage: "Storyline is missing!" },
+    { field: "status", errorMessage: "Status is missing!" },
+    { field: "type", errorMessage: "Type is missing!" },
+    { field: "language", errorMessage: "Language is missing!" },
+    { field: "releaseDate", errorMessage: "Release Date is missing!" },
+    // { field: "tags", errorMessage: "Tags are missing!" },
+    // { field: "cast", errorMessage: "Cast is missing!" },
+  ];
 
-  for(const {field,errorMessage} of validators){
-    console.log(field)
-    console.log(movieInfo[field])
-
-    if (!movieInfo[field].trim()) {
+  for (const { field, errorMessage } of validators) {
+    if (!field.trim()) {
       return { error: errorMessage };
     }
   }
 
-  
+  if (!Array.isArray(genres)) return { error: "Genres is missing!" };
+
+  for (let gen of genres) {
+    if (!gen.trim()) return { error: "Invalid genres" };
+  }
+
+  //valid is array
+  if (!Array.isArray(tags)) return { error: "Tags is missing!" };
+
+  //valid is string
+  for (let tag of tags) {
+    if (!tag.trim()) return { error: "Invalid tags" };
+  }
+
+  //valid is array
+  if (!Array.isArray(cast)) return { error: "Cast is missing!" };
+
+  //valid is object
+  for (let c of cast) {
+    if (typeof c !== "object") return { error: "Invalid cast" };
+  }
 };
 
 export default function MovieForm() {
@@ -84,7 +100,7 @@ export default function MovieForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { error } = validateMovie(movieInfo);
-    // console.log(error);
+    console.log(error);
   };
 
   const updatePosterForUI = (file) => {
