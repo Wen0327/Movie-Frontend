@@ -56,14 +56,9 @@ const validateMovie = (movieInfo) => {
     { field: type, errorMessage: "Type is missing!" },
     { field: language, errorMessage: "Language is missing!" },
     { field: releaseDate, errorMessage: "Release Date is missing!" },
-    // { field: "tags", errorMessage: "Tags are missing!" },
-    // { field: "cast", errorMessage: "Cast is missing!" },
   ];
 
   for (const { field, errorMessage } of validators) {
-    console.log(storyLine)
-    console.log(movieInfo)
-    console.log(field)
     if (!field.trim()) {
       return { error: errorMessage };
     }
@@ -135,7 +130,7 @@ export default function MovieForm() {
   };
 
   const updateGenres = (genres) => {
-    const { cast } = movieInfo;
+    const { genres } = movieInfo;
     setMovieInfo({ ...movieInfo, genres });
   };
 
@@ -225,6 +220,7 @@ export default function MovieForm() {
             <Label htmlFor="storyLine">Story Line</Label>
             <textarea
               id="storyLine"
+              onChange={handleChange}
               defaultValue={storyLine}
               name="storyLine"
               placeholder="Movie story line"
