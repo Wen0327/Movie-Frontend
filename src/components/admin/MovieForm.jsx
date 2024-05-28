@@ -61,6 +61,7 @@ const validateMovie = (movieInfo) => {
   ];
 
   for (const { field, errorMessage } of validators) {
+    console.log(field)
     if (!field.trim()) {
       return { error: errorMessage };
     }
