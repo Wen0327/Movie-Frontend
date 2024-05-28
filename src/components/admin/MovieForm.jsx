@@ -37,6 +37,10 @@ const defaultMovieInfo = {
   status: "",
 };
 
+const validateMovie = (movieInfo)=>{
+  console.log(movieInfo)
+}
+
 export default function MovieForm() {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWriterModal, setShowWriterModal] = useState(false);
@@ -47,7 +51,7 @@ export default function MovieForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(movieInfo);
+    validateMovie(movieInfo);
   };
 
   const updatePosterForUI = (file) => {
