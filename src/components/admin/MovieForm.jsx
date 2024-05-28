@@ -62,7 +62,7 @@ const validateMovie = (movieInfo) => {
   ]
 
   for(const {field,errorMessage} of validators){
-    console.log(movieInfo[field],field)
+    console.log(field)
     if (!movieInfo[field].trim()) {
       return { error: errorMessage };
     }
@@ -82,7 +82,7 @@ export default function MovieForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { error } = validateMovie(movieInfo);
-    console.log(error);
+    // console.log(error);
   };
 
   const updatePosterForUI = (file) => {
