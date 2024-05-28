@@ -130,7 +130,6 @@ export default function MovieForm() {
   };
 
   const updateGenres = (genres) => {
-    const { genres } = movieInfo;
     setMovieInfo({ ...movieInfo, genres });
   };
 
