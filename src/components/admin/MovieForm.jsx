@@ -50,12 +50,12 @@ const validateMovie = (movieInfo) => {
   } = movieInfo;
 
   const validators = [
-    { field: "title", errorMessage: "Title is missing!" },
-    { field: "storyLine", errorMessage: "Storyline is missing!" },
-    { field: "status", errorMessage: "Status is missing!" },
-    { field: "type", errorMessage: "Type is missing!" },
-    { field: "language", errorMessage: "Language is missing!" },
-    { field: "releaseDate", errorMessage: "Release Date is missing!" },
+    { field: title, errorMessage: "Title is missing!" },
+    { field: storyLine, errorMessage: "Storyline is missing!" },
+    { field: status, errorMessage: "Status is missing!" },
+    { field: type, errorMessage: "Type is missing!" },
+    { field: language, errorMessage: "Language is missing!" },
+    { field: releaseDate, errorMessage: "Release Date is missing!" },
     // { field: "tags", errorMessage: "Tags are missing!" },
     // { field: "cast", errorMessage: "Cast is missing!" },
   ];
