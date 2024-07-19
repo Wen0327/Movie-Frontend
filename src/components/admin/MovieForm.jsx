@@ -64,14 +64,14 @@ const validateMovie = (movieInfo) => {
     }
   }
 
-  if (!Array.isArray(genres)) return { error: "Genres is missing!" };
+  if (!genres.length) return { error: "Genres is missing!" };
 
   for (let gen of genres) {
     if (!gen.trim()) return { error: "Invalid genres" };
   }
 
   //valid is array
-  if (!Array.isArray(tags)) return { error: "Tags is missing!" };
+  if (!tags.length) return { error: "Tags is missing!" };
 
   //valid is string
   for (let tag of tags) {
@@ -79,7 +79,7 @@ const validateMovie = (movieInfo) => {
   }
 
   //valid is array
-  if (!Array.isArray(cast)) return { error: "Cast is missing!" };
+  if (!cast.length) return { error: "Cast is missing!" };
 
   //valid is object
   for (let c of cast) {
