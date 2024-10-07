@@ -37,8 +37,7 @@ const defaultMovieInfo = {
   status: "",
 };
 
-
-export default function MovieForm({onsubmit}) {
+export default function MovieForm({ onsubmit }) {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWriterModal, setShowWriterModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
@@ -50,10 +49,27 @@ export default function MovieForm({onsubmit}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { error } = validateMovie(movieInfo);
-    if (error) {
-      updateNotification('error',error)
+    if (error) updateNotification("error", error);
+
+    // cast tags genres writers
+    const { tags, genres, cast, writers, director } = movieInfo;
+    const formData = new FormData();
+    formData.append("tags", JSON.stringify(tags));
+    formData.append("genres", JSON.stringify(genres));
+
+    const finalCast = cast.map((profile) => profile.id);
+    formData.append("cast", JSON.stringify(finalCast));
+
+    if (writers.length) {
+      const finalWriters = cast.map((profile) => profile.id);
+      formData.append("writers", JSON.stringify(finalWriters));
     }
-    onsubmit(movieInfo)
+
+    if (director.id) {
+      formData.append("director", director.id);
+    }
+
+    onsubmit(movieInfo);
   };
 
   const updatePosterForUI = (file) => {
