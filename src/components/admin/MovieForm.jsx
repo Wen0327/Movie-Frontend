@@ -52,24 +52,36 @@ export default function MovieForm({ onsubmit }) {
     if (error) updateNotification("error", error);
 
     // cast tags genres writers
-    const { tags, genres, cast, writers, director } = movieInfo;
+    const { tags, genres, cast, writers, director, poster } = movieInfo;
     const formData = new FormData();
-    formData.append("tags", JSON.stringify(tags));
-    formData.append("genres", JSON.stringify(genres));
+    const finalMovieInfo = {
+      ...movieInfo,
+    };
+
+    finalMovieInfo.tags = JSON.stringify(tags);
+    finalMovieInfo.genres = JSON.stringify(genres);
 
     const finalCast = cast.map((profile) => profile.id);
-    formData.append("cast", JSON.stringify(finalCast));
+    finalMovieInfo.cast = JSON.stringify(finalCast);
 
     if (writers.length) {
-      const finalWriters = cast.map((profile) => profile.id);
-      formData.append("writers", JSON.stringify(finalWriters));
+      const finalWriters = writers.map((profile) => profile.id);
+      finalMovieInfo.writers = JSON.stringify(finalWriters);
     }
 
     if (director.id) {
-      formData.append("director", director.id);
+      finalMovieInfo.director = director.id;
     }
 
-    onsubmit(movieInfo);
+    if (poster) {
+      finalMovieInfo.poster = poster;
+    }
+
+    for (let key in finalMovieInfo) {
+      formData.append(key, finalMovieInfo[key]);
+    }
+
+    onsubmit(formData);
   };
 
   const updatePosterForUI = (file) => {
