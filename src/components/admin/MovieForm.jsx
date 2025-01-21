@@ -61,7 +61,11 @@ export default function MovieForm({ onsubmit }) {
     finalMovieInfo.tags = JSON.stringify(tags);
     finalMovieInfo.genres = JSON.stringify(genres);
 
-    const finalCast = cast.map((profile) => profile.id);
+    const finalCast = cast.map((c) =>({
+      actor:c.profile.id,
+      roleAs:c.roleAs,
+      leadActor:c.leadActor
+    }));
     finalMovieInfo.cast = JSON.stringify(finalCast);
 
     if (writers.length) {
